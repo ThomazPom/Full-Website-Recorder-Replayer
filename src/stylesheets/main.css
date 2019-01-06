@@ -34,9 +34,10 @@ body {
 {
   flex: 1;
 }
-.view webview
+.view webview, .view iframe
 {
   height: 100%;
+  width: 100%;
 }
 #record-input, .label {
     font-family: sans-serif;
