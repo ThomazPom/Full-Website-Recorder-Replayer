@@ -1,0 +1,21 @@
+{
+  "last-modified": "Fri, 04 Jan 2019 17:09:30 GMT",
+  "server": "Microsoft-IIS/10.0",
+  "access-control-allow-origin": "*",
+  "x-datacenter": "NorthEU",
+  "x-activityid": "387ab414-c29a-44e0-a082-6b65dab22824",
+  "x-instance": "Resizer.Web_IN_2",
+  "x-deployment": "a89a5014e89c41b7b60a64d7ee950637",
+  "timing-allow-origin": "*",
+  "x-aspnet-version": "4.0.30319",
+  "x-powered-by": "ASP.NET",
+  "content-type": "image/png",
+  "content-location": "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31",
+  "x-source-length": "4054",
+  "x-cms-cdninvalkey": "am:RE1Mu3b",
+  "content-length": "4054",
+  "cache-control": "public, max-age=251140",
+  "expires": "Wed, 09 Jan 2019 17:09:05 GMT",
+  "date": "Sun, 06 Jan 2019 19:23:25 GMT",
+  "connection": "close"
+}

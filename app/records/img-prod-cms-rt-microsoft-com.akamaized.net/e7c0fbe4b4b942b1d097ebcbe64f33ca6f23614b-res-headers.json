@@ -1,0 +1,11 @@
+{
+  "access-control-allow-origin": "*",
+  "last-modified": "Thu, 03 Jan 2019 16:38:58 UTC",
+  "server": "Akamai Image Manager",
+  "content-length": "10897",
+  "content-type": "image/jpeg",
+  "cache-control": "private, no-transform, max-age=163000",
+  "expires": "Tue, 08 Jan 2019 16:40:06 GMT",
+  "date": "Sun, 06 Jan 2019 19:23:26 GMT",
+  "connection": "close"
+}

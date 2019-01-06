@@ -1,0 +1,21 @@
+{
+  "content-type": "application/javascript",
+  "last-modified": "Sun, 16 Sep 2018 22:23:27 GMT",
+  "x-content-type-options": "nosniff",
+  "access-control-allow-origin": "*",
+  "x-activity-id": "888dd617-7d10-4588-80c9-def31d6d1567",
+  "ms-cv": "hd7IJQaeUUKCCqew.0",
+  "x-appversion": "1.0.6830.2410",
+  "x-az": "{did:bc2b7bc46d52475d938310356b1be9b2, rid: 2, sn: marketingsites-neu-prod, dt: 2018-09-09T10:25:33.5663303Z, bt: 2018-09-13T01:20:20.0000000Z}",
+  "p3p": "CP=\"CAO CONi OTR OUR DEM ONL\"",
+  "access-control-allow-methods": "HEAD,GET,POST,PATCH,PUT,OPTIONS",
+  "access-control-allow-headers": "*",
+  "x-xss-protection": "1",
+  "strict-transport-security": "max-age=31536000",
+  "cache-control": "public, max-age=21870021",
+  "expires": "Mon, 16 Sep 2019 22:23:46 GMT",
+  "date": "Sun, 06 Jan 2019 19:23:25 GMT",
+  "transfer-encoding": "chunked",
+  "connection": "close, Transfer-Encoding",
+  "x-rtag": "RT"
+}
