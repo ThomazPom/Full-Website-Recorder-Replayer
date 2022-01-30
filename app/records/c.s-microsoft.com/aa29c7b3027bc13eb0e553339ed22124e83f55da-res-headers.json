@@ -1,0 +1,15 @@
+{
+  "content-type": "text/javascript;charset=utf-8",
+  "content-md5": "XpofSqMdSqYPb4maLkXO+A==",
+  "last-modified": "Mon, 10 Sep 2018 17:42:12 GMT",
+  "etag": "0x8D61744BD6EA9B6",
+  "x-ms-request-id": "fdf7313e-f01e-00ed-12fe-491a1c000000",
+  "x-ms-version": "2009-09-19",
+  "x-ms-lease-status": "unlocked",
+  "x-ms-blob-type": "BlockBlob",
+  "date": "Sun, 06 Jan 2019 19:23:25 GMT",
+  "content-length": "3560",
+  "connection": "close",
+  "access-control-allow-methods": "GET,POST",
+  "access-control-allow-origin": "*"
+}

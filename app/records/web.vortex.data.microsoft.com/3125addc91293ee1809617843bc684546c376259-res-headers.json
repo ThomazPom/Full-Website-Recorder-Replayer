@@ -1,0 +1,19 @@
+{
+  "cache-control": "no-cache, no-store",
+  "pragma": "no-cache",
+  "content-length": "57",
+  "content-type": "application/json",
+  "expires": "0",
+  "x-content-type-options": "nosniff",
+  "ms-cv": "nDlBDDFk10KiYM1b4LCuCQ.0",
+  "set-cookie": [
+    "MC1=GUID=fbf575d1384d4ee79cd3c0b0ed3e40d9&HASH=fbf5&LV=201901&V=4&LU=1546802606318; Domain=.microsoft.com; Expires=Mon, 06 Jan 2020 19:23:55 GMT; Path=/",
+    "MS0=b0a856d238944e5387bebe7f551b23fe; Domain=.microsoft.com; Expires=Sun, 06 Jan 2019 19:53:55 GMT; Path=/"
+  ],
+  "p3p": "CP=\"ALL IND DSP COR ADM CONo CUR CUSo IVAo IVDo PSA PSD TAI TELo OUR SAMo CNT COM INT NAV ONL PHY PRE PUR UNI\"",
+  "access-control-allow-headers": "Accept, Authorization, Content-Type, Origin, X-Xbl-Contract-Version, X-Xbl-Device-Type, Xbl-Authz-Actor-10, WithCredentials",
+  "access-control-allow-origin": "https://microsoft.com",
+  "access-control-allow-credentials": "true",
+  "date": "Sun, 06 Jan 2019 19:23:54 GMT",
+  "connection": "close"
+}
