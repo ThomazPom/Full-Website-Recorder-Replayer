@@ -10,6 +10,8 @@ console.log2 = function(any)
       mainWindow.webContents.send('log', any)
                     
 }
+var Readable = require('stream').Readable
+
 
 import path from "path";
 import url from "url";
@@ -79,8 +81,12 @@ const sanitize = require("sanitize-filename");
 const sha1 = require('sha1');
 var mainWindow;
 function proxyrequest(httprequest, renderresult) {
-    var sitefolder = path.join(env.fullrecordfolder, url.parse(httprequest.url).hostname);
 
+
+    var parseurl = url.parse(httprequest.url);
+    var sitefolder = path.join(env.fullrecordfolder,"("+parseurl.protocol.replace(":","")+") "+ parseurl.hostname);
+
+    console.log(sitefolder);
     if (!fs.existsSync(sitefolder)) {
         fs.mkdirSync(sitefolder);
     }
@@ -92,18 +98,38 @@ function proxyrequest(httprequest, renderresult) {
 
     var filename = path.join(sitefolder, basename);
     var headers_filename = filename+"-res-headers.json";
-    if (env.currentmode == "mode-record" && !fs.existsSync(headers_filename)) {
+    if (env.currentmode == "mode-record" 
+        //&& !fs.existsSync(headers_filename)
+        ) {
         // Will record and display any request
         if (httprequest.uploadData && httprequest.uploadData[0] && httprequest.uploadData[0].bytes) {
             httprequest.body = httprequest.uploadData[0].bytes;
         }
         request(httprequest, function(error, response, body) {
+           
             if (error) {
+
+
+                var s = new Readable
+                s.push('{Recorder:"Request failed"')    // the string you want
+                s.push(null) 
+                renderresult({headers: {},data: s})
+
                 return console.error('request failed:', error);
             }
-            //Saving response headers
+              var  headers_json= JSON.stringify(response.headers)
+             //removing anti framing headers
+            var xfo = headers_json.match(/x-frame-options/i);
+            var csp = headers_json.match(/content-security-policy/i);
+          //  var acao = headers_json.match(/access-control-allow-origin/i); // Maybe
+                delete response.headers[(xfo||{})[0]];
+                delete response.headers[(csp||{})[0]];
+            //    delete response.headers[(acao||{})[0]]; // maybe
+           // response.headers["access-control-allow-origin"]="*"; //maybe
+            
             // TODO: Extend cookies life to 100 years :)
-            fs.writeFile(headers_filename, JSON.stringify(response.headers, null, 2), (err) => {
+            
+            fs.writeFile(headers_filename, headers_json, (err) => {
                 //if (err) throw err;
                 //console.log('header file has been saved!');
             });
@@ -119,12 +145,19 @@ function proxyrequest(httprequest, renderresult) {
               //Will replay saved requests
               fs.readFile(headers_filename, (err, data) => {
                     if (err) { console.log("headers file not recorded"+httprequest.url)
-                      mainWindow.webContents.send('stickymessage', {position:"right",message:httprequest.url+' is not recorded'})
+                      mainWindow.webContents.send('stickymessage', 
+                        {position:"right",message:httprequest.url,message2:' is not recorded'})
+
+                        var s = new Readable
+                        s.push('{Recorder:"Sorry, This page ('+httprequest.url+') has never been recorded"}')    // the string you want
+                        s.push(null) 
+                        renderresult({headers: {},data: s})
                         return;
 
                   }
                     var response_headers = JSON.parse(data);
-                    renderresult({headers: response_headers,data: fs.createReadStream(filename)})
+                    renderresult({headers: response_headers,data: fs.createReadStream(filename)});
+                    return;
                    //if i ever want to use interceptFileProtocol instead of interceptStreamProtocol :
                     //renderresult({headers: response_headers,path: filename})
               });
