@@ -80,6 +80,6 @@ $(siteslist).each(function(){
         rimraf(sitefolder,function(){});
         return;
     }
-    $("select#record-input").append(new Option("option text", "value"));
+    $("select#record-input").append(new Option(this,this));
 
 });
