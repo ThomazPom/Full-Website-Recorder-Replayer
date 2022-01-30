@@ -136,19 +136,20 @@ function proxyrequest(httprequest, renderresult) {
              //removing anti framing headers
             var xfo = headers_json.match(/x-frame-options/i);
             var csp = headers_json.match(/content-security-policy/i);
-          //  var acao = headers_json.match(/access-control-allow-origin/i); // Maybe
+            var acao = headers_json.match(/access-control-allow-origin/i); // Maybe
                 delete response.headers[(xfo||{})[0]];
                 delete response.headers[(csp||{})[0]];
             //    delete response.headers[(acao||{})[0]]; // maybe
-           // response.headers["access-control-allow-origin"]="*"; //maybe
-            
+            if(acao){
+                response.headers["access-control-allow-origin"] = response.headers["access-control-allow-origin"].replace(/frame-ancestors[^;]*;?/, "frame-ancestors http://* https://*;"); //maybe
+            }
             // TODO: Extend cookies life to 100 years :)
             fs.writeFile(headers_filename, headers_json, (err) => {
                 //if (err) throw err;
                 //console.log('header file has been saved!');
             });
             //Using interceptStreamProtocol
-            renderresult({headers: response.headers,data: fs.createReadStream(filename)})
+            renderresult({headers: response.headers,data: fs.createReadStream(filename)});
             //if i ever want to use interceptFileProtocol instead of interceptStreamProtocol :
             //renderresult({headers: response.headers,path: filename})
             
