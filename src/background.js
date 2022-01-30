@@ -4,12 +4,6 @@
 // window from here.
 
 
-console.log2 = function(any)
-{
-    console.log(any);
-      mainWindow.webContents.send('log', any)
-                    
-}
 var Readable = require('stream').Readable
 
 
@@ -86,7 +80,6 @@ function proxyrequest(httprequest, renderresult) {
     var parseurl = url.parse(httprequest.url);
     var sitefolder = path.join(env.fullrecordfolder,"("+parseurl.protocol.replace(":","")+") "+ parseurl.hostname);
 
-    console.log(sitefolder);
     if (!fs.existsSync(sitefolder)) {
         fs.mkdirSync(sitefolder);
     }
@@ -105,17 +98,18 @@ function proxyrequest(httprequest, renderresult) {
         if (httprequest.uploadData && httprequest.uploadData[0] && httprequest.uploadData[0].bytes) {
             httprequest.body = httprequest.uploadData[0].bytes;
         }
-        request(httprequest, function(error, response, body) {
+        var writestream = request(httprequest, function(error, response, body) {
            
             if (error) {
 
 
                 var s = new Readable
-                s.push('{Recorder:"Request failed"')    // the string you want
-                s.push(null) 
+                s.push(JSON.stringify(error));   
+                s.push(null) ;
                 renderresult({headers: {},data: s})
-
+                writestream.end()
                 return console.error('request failed:', error);
+
             }
               var  headers_json= JSON.stringify(response.headers)
              //removing anti framing headers
@@ -128,7 +122,6 @@ function proxyrequest(httprequest, renderresult) {
            // response.headers["access-control-allow-origin"]="*"; //maybe
             
             // TODO: Extend cookies life to 100 years :)
-            
             fs.writeFile(headers_filename, headers_json, (err) => {
                 //if (err) throw err;
                 //console.log('header file has been saved!');
@@ -149,6 +142,8 @@ function proxyrequest(httprequest, renderresult) {
                         {position:"right",message:httprequest.url,message2:' is not recorded'})
 
                         var s = new Readable
+
+                        // TODO  : NICE HTML +  html headers
                         s.push('{Recorder:"Sorry, This page ('+httprequest.url+') has never been recorded"}')    // the string you want
                         s.push(null) 
                         renderresult({headers: {},data: s})
@@ -157,9 +152,10 @@ function proxyrequest(httprequest, renderresult) {
                   }
                     var response_headers = JSON.parse(data);
                     renderresult({headers: response_headers,data: fs.createReadStream(filename)});
-                    return;
+                    
                    //if i ever want to use interceptFileProtocol instead of interceptStreamProtocol :
                     //renderresult({headers: response_headers,path: filename})
+                    return;
               });
       
 
