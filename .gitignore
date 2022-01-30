@@ -6,7 +6,7 @@
 profile/
 records/
 
-### Node ###
+### Node ##
 # Logs
 logs
 *.log
