@@ -55,11 +55,15 @@ owebview.addEventListener('new-window', (e) => {
     owebview.loadURL(e.url);
 })
 
+$("#grabweb").click(function(){
+    var curmode = $(this).attr("data-mode");
+    $(this).attr("data-mode",curmode=="keep-local"?"grab-from-web":"keep-local")
 
+})
 
-$("#changemode").click(function() {
+$(".changemode").click(function() {
     ipcRenderer.sendSync('synchronous-message', {
-        type: "mode-change",
+        type: $(this).attr("data-type"),
         data: $(this).attr("data-mode")
     })
 });

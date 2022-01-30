@@ -71,21 +71,24 @@ body {
       margin-right: auto;
     margin-left: 50px;
 }
-#changemode
-{
-  float: right;
-}
-#changemode .chmcont
+.changemode .chmcont
 {
       width: 70px;
-    background: green;
+    background: green ;
     height: 40px;
     display: inline-block;
     border-radius: 30px;
+    text-align: left;
 
     border: 2px solid black;
 }
-#changemode .cmtog
+#changer
+{
+  text-align: right;
+ 
+      float: right;
+}
+.changemode .cmtog
 {
   background: white;
     display: inline-block;
@@ -95,13 +98,18 @@ body {
     border: 2px solid black;
 }
 
-#changemode[data-mode='mode-record'] .chmcont .cmtog
+.changemode[data-mode='mode-record'] .chmcont .cmtog,
+.changemode[data-mode='grab-from-web'] .chmcont .cmtog
 {
       float: right;
 }
 
-#changemode[data-mode='mode-record'] .chmcont
-{
+.changemode[data-mode='mode-replay'] .chmcont{
+  background: royalblue;
+}
 
-    background: royalblue;
+.changemode[data-mode='keep-local'] .chmcont{
+
+
+    background: grey;
 }
