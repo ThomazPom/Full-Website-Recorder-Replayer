@@ -13,7 +13,7 @@ import {
     app,
     Menu,
     protocol,
-    ipcMain,
+    ipcMain
 } from "electron";
 import {
     devMenuTemplate
@@ -23,22 +23,28 @@ import {
 } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
 const fs = require("fs");
-
+const os = require('os');
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
 import env from "env";
-
+env.missingRessourceMode="keep-local";
+            
 env.fullrecordfolder = path.join(__dirname, env.recordfolder)
+env.tmpfolder = path.join(os.tmpdir(), env.recordfolder)
 
 env.currentmode =  process.argv.includes("--mode-replay")?"mode-replay":"mode-record";
 ipcMain.on('synchronous-message', (event, arg) => {
     console.log(arg);
     switch (arg.type) {
-        case "mode-change":
+        case "mode-record-change":
             env.currentmode=arg.data;
             change_mode_session();
            // app.relaunch({ args: [".",'--'+arg.data] })
             //app.exit(0)
+            break;
+
+        case "missing-ressource-mode-change":
+            env.missingRessourceMode=arg.data;
             break;
     }
 
@@ -47,6 +53,10 @@ ipcMain.on('synchronous-message', (event, arg) => {
 
 if (!fs.existsSync(env.fullrecordfolder)) {
     fs.mkdirSync(env.fullrecordfolder);
+}
+
+if (!fs.existsSync(env.tmpfolder)) {
+    fs.mkdirSync(env.tmpfolder);
 }
 
 const setApplicationMenu = () => {
@@ -91,7 +101,18 @@ function proxyrequest(httprequest, renderresult) {
 
     var filename = path.join(sitefolder, basename);
     var headers_filename = filename+"-res-headers.json";
-    if (env.currentmode == "mode-record" 
+
+    var isgrabonmissingmode = !fs.existsSync(headers_filename) && env.missingRessourceMode=="grab-from-web";
+    if(isgrabonmissingmode)
+    {
+        var filename = path.join(env.tmpfolder, basename);
+        var headers_filename = filename+"-res-headers.json";
+       // console.log(headers_filename);
+    }
+
+    var headers_filename = filename+"-res-headers.json";
+
+    if (env.currentmode == "mode-record" || isgrabonmissingmode
         //&& !fs.existsSync(headers_filename)
         ) {
         // Will record and display any request
@@ -137,7 +158,9 @@ function proxyrequest(httprequest, renderresult) {
     {
               //Will replay saved requests
               fs.readFile(headers_filename, (err, data) => {
-                    if (err) { console.log("headers file not recorded"+httprequest.url)
+                    if (err) {
+
+                        console.log("headers file not recorded"+httprequest.url)
                       mainWindow.webContents.send('stickymessage', 
                         {position:"right",message:httprequest.url,message2:' is not recorded'})
 

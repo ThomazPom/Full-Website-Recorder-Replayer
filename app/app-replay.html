@@ -10,13 +10,22 @@
   <div id="app"  style="display: none;"  >
     <div class="viewcontainer">
       <div class="viewheader">
-        <span id="changemode"  data-mode="mode-record">
+        <span id="changer">
+        <span class="changemode" id="recmode" data-type="mode-record-change" data-mode="mode-record">
 
           <span>Replay mode</span>
           <span class="chmcont">
             <span class="cmtog"></span>
           </span>
+        </span><br/>
+                <span class="changemode" id="grabweb" data-type="missing-ressource-mode-change" data-mode="keep-local">
+
+          <span>Grab from web missing files</span>
+          <span class="chmcont">
+            <span class="cmtog"></span>
+          </span>
         </span>
+      </span>
         <h1>Your local copy of the website</h1>
         <label><u><b>Enter here a website you recorded </b></u></label>
         <select id="record-input"></select>
