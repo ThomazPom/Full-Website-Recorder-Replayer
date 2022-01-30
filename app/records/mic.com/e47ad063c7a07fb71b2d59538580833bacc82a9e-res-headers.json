@@ -1,0 +1,17 @@
+{
+  "date": "Sun, 06 Jan 2019 19:23:22 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "content-length": "294751",
+  "connection": "close",
+  "vary": "Accept-Encoding",
+  "x-dns-prefetch-control": "off",
+  "strict-transport-security": "max-age=15552000",
+  "x-download-options": "noopen",
+  "x-content-type-options": "nosniff",
+  "x-xss-protection": "1; mode=block",
+  "cache-control": "max-age=30",
+  "age": "42",
+  "x-cache": "cached",
+  "grace": "none",
+  "accept-ranges": "bytes"
+}

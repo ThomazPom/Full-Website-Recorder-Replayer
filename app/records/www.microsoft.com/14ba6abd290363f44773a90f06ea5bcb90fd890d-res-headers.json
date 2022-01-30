@@ -1,0 +1,23 @@
+{
+  "content-type": "text/javascript; charset=utf-8",
+  "last-modified": "Mon, 04 Jun 2018 21:09:44 GMT",
+  "x-content-type-options": "nosniff",
+  "x-s1": "2018-06-04T21:09:44",
+  "x-s2": "2018-06-04T21:09:44",
+  "timing-allow-origin": "*",
+  "access-control-allow-origin": "*",
+  "x-activity-id": "4921391e-958e-499c-8830-d49540c04563",
+  "ms-cv": "OxfSEp4ZJEOOpffQ.0",
+  "x-appversion": "1.0.6727.3836",
+  "x-az": "{did:bc2b7bc46d52475d938310356b1be9b2, rid: 3, sn: marketingsites-neu-prod, dt: 2018-06-01T10:33:29.6569335Z, bt: 2018-06-02T02:07:52.0000000Z}",
+  "p3p": "CP=\"NON DSP ADM DEV PSD OUR IND STP PHY PRE NAV UNI\"",
+  "access-control-allow-methods": "HEAD,GET,OPTIONS",
+  "x-xss-protection": "1",
+  "strict-transport-security": "max-age=31536000",
+  "cache-control": "public, max-age=12879986",
+  "expires": "Tue, 04 Jun 2019 21:09:51 GMT",
+  "date": "Sun, 06 Jan 2019 19:23:25 GMT",
+  "transfer-encoding": "chunked",
+  "connection": "close, Transfer-Encoding",
+  "x-rtag": "RT"
+}
