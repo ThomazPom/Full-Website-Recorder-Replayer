@@ -26,7 +26,7 @@ const osMap = {
 };
 
  ipcRenderer.on('stickymessage', (event, message) => {
-    stickymessage(message.position,message.message)
+    stickymessage(message)
  })
      
  ipcRenderer.on('log', (event, any) => {
@@ -40,10 +40,12 @@ document.querySelector("#app").style.display = "block";
 
 
 $("input#record-input").keyup(function() {
-    document.querySelector("#record-web").loadURL(this.value);
+    document.querySelector("#record-web").src = (this.value);
 });
 $("select#record-input").change(function() {
-    document.querySelector("#record-web").loadURL(this.value);
+    var siteurl = this.value.split(") ");
+    console.log(siteurl[0].split("(")[1]);
+    document.querySelector("#record-web").src = siteurl[0].split("(")[1]+":"+siteurl[1];
 });
 
 
@@ -62,10 +64,13 @@ $("#changemode").click(function() {
     })
 });
 
-function stickymessage(position,message)
+function stickymessage(message)
 {
-	var stickydom = $("<div>",{class:"stickymessage "+position,text:message})
-	$("#messagescontainer").prepend(stickydom);
+    console.log(message);
+	var stickydom = $("<div>",{class:"stickymessage "+message.position,text:message.message})
+    stickydom.append($("<b>",{style:"color:red",text:message.message2})
+    )
+    $("#messagescontainer").prepend(stickydom);
 
 	stickydom.delay( 3000 ).animate({height:0,padding:0,opacity:0},1000,function() {
     stickydom.remove();
