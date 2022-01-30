@@ -102,8 +102,8 @@ function proxyrequest(httprequest, renderresult) {
     var filename = path.join(sitefolder, basename);
     var headers_filename = filename+"-res-headers.json";
 
-    var isgrabonmissingmode = !fs.existsSync(headers_filename) && env.missingRessourceMode=="grab-from-web";
-    if(isgrabonmissingmode)
+    var isGrabOnMissingMode = env.currentmode == "mode-replay" && !fs.existsSync(headers_filename) && env.missingRessourceMode=="grab-from-web";
+    if(isGrabOnMissingMode)
     {
         var filename = path.join(env.tmpfolder, basename);
         var headers_filename = filename+"-res-headers.json";
@@ -112,7 +112,7 @@ function proxyrequest(httprequest, renderresult) {
 
     var headers_filename = filename+"-res-headers.json";
 
-    if (env.currentmode == "mode-record" || isgrabonmissingmode
+    if (env.currentmode == "mode-record" || isGrabOnMissingMode
         //&& !fs.existsSync(headers_filename)
         ) {
         // Will record and display any request
