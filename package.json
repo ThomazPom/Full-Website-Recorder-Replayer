@@ -1,6 +1,8 @@
 {
+  "type": "module",
   "dependencies": {
     "js-yaml": "^4.1.0",
+    "node-fetch": "^3.2.4",
     "puppeteer": "^13.1.2",
     "sha1": "^1.1.1"
   }

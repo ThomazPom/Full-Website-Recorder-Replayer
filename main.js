@@ -1,20 +1,30 @@
-const puppeteer = require('puppeteer');
-const path = require('path')
-const fs = require('fs');
-var sha1 = require('sha1');
-const yaml = require('js-yaml');
-const { env } = require('process');
+
+import fetch from 'node-fetch';
+import puppeteer from "puppeteer";
+import path from 'path';
+import { env } from 'process';
+import fs, { cp } from 'fs'
+import sha1 from 'sha1'
+import yaml from 'js-yaml'
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import replay_record_functions from './replay_record_functions.js';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
 const settings = {
     fullrecordfolder: path.join(__dirname, "records"),
     mode_record: process.argv.includes("--mode_record"),
-    keep_local: process.argv.includes("--keep_local"),
-    fetch_missing_from_web: process.argv.includes("--grab_from_web"),
-    mode_replay: process.argv.includes("--mode_replay"),
-    blank_profile: process.argv.includes("--blank_profile"),
-    ignore_ssl_errors:process.argv.includes("--ignore_ssl_errors"),
-    macos_real_chromium:process.argv.includes("--macos_real_chromium"),   
-    disable_cookies:process.argv.includes("--disable_cookies"),
-    window_real_chromium:process.argv.includes("--window_real_chromium"),   
+    keep_local: process.argv.includes("--keep_local"), // Keep local and oldest item if already downloaded
+    fetch_missing_from_web: process.argv.includes("--grab_from_web"), // On replay mode, allow grabbing from web
+    mode_replay: process.argv.includes("--mode_replay"), 
+    blank_profile: process.argv.includes("--blank_profile"), // Starts from a blank and temporary profile 
+    ignore_ssl_errors:process.argv.includes("--ignore_ssl_errors"), // Allow to open pages with ssl errors
+    macos_real_chromium:process.argv.includes("--macos_real_chromium"), // Starts the system installed chromium on macos
+    disable_cookies:process.argv.includes("--disable_cookies"), // Starts a session with cookies disabled
+    window_real_chromium:process.argv.includes("--window_real_chromium"), // Starts the system installed chromium on windows
+    enable_scripts:process.argv.includes("--enable_scripts"), // Starts the system installed chromium on windows
 }
 function loadPersistentSettings()
 {
@@ -61,17 +71,29 @@ async function registerpage(page) {
 
         console.log('Recording new page', settings.mode_record);
         page.on('response', interceptorResponse);
+        if(settings.enable_scripts)
+        {
+            page.on('framenavigated', (frame) =>{
+                replay_record_functions.loader(frame,replay_record_functions.record_functions)
+            });
+        }
     }
     if (settings.mode_replay) {
         console.log('Replaying new page');
         await page.setRequestInterception(true);
         page.on('request', interceptorRequest);
+        if(settings.enable_scripts)
+        {
+            page.on('framenavigated', (frame) =>{
+                replay_record_functions.loader(frame,replay_record_functions.replay_functions)
+            });
+        }
     }
 }
 (async () => {
     
 
-    launchArgs = {
+    let launchArgs = {
         headless: false, defaultViewport: null,
         ignoreHTTPSErrors: settings.ignore_ssl_errors,
         args: [
@@ -92,7 +114,7 @@ async function registerpage(page) {
     }
     if (!settings.blank_profile) {
 
-        userDataDir = path.join(__dirname, "profile")
+        let userDataDir = path.join(__dirname, "profile")
         fs.mkdir(userDataDir, { recursive: true }, z => { })
         launchArgs.userDataDir = userDataDir
 
@@ -126,15 +148,15 @@ async function registerpage(page) {
     registerpage(page0)
     browser.on('targetcreated', async function (tab) {
         console.log('New Tab Created');
-        let page = await tab.page().then()
+        let page = await tab.page()
         registerpage(page)
     })
 })();
 function isABlacklistReplay(parseurl){
-    rbp=settings.persistentSettings.replay_blacklist_regex
+    let rbp=settings.persistentSettings.replay_blacklist_regex
     for(const site of [parseurl.hostname,"any"])
     {
-        blacklist =rbp[site];
+        let blacklist =rbp[site];
         if (blacklist=="*")
         {
             return true;
@@ -161,7 +183,7 @@ async function interceptorRequest(request) {
 
     var [parseurl, sitefolder, basename, filename, metadata_filename] = generateFilenames(request)
     if (fs.existsSync(metadata_filename) && !isABlacklistReplay(parseurl)) {
-        metadata = JSON.parse(fs.readFileSync(metadata_filename))
+        let metadata = JSON.parse(fs.readFileSync(metadata_filename))
         // var  metadata_json= JSON.stringify({
         //     status:response.status(),
         //     request_url:response.request().url(),
@@ -170,7 +192,7 @@ async function interceptorRequest(request) {
         // })
 
         console.log("REPLAY ", request.method(), request.url(), metadata.status);
-        response = {
+        let response = {
             status: metadata.status,
             headers: metadata.response_headers
         }
@@ -185,7 +207,7 @@ async function interceptorRequest(request) {
         request.continue();
     }
     else {
-        console.log("SORRY ", request.method(), request.url(), metadata.status);
+        console.log("SORRY ", request.method(), request.url(), "404");
 
         request.respond({
             status: 404,
@@ -231,25 +253,57 @@ async function interceptorResponse(response) {
 
 
     var link_descriptor_filename = path.join(sitefolder, "known_links.txt");
-
-    if(responseHeaders["content-type"] && responseHeaders["content-type"].includes("application/pdf"))
+    let body_buffer=null;
+    if(responseHeaders["content-type"] && responseHeaders["content-type"].includes("application/pdf")
+    // || insert incompatible files here
+    
+    )
     {
-        console.log("PDF HERE !");
-        console.log(response)
-     //   console.log(new puppeteer.HTTPRequest)
-    }
-    response.buffer().then(buffer => {
+        console.log("PDF HERE !",filename);
+        let request=response.request();
 
-        if (responseHeaders["content-type"] && responseHeaders["content-type"].includes("text/html")) {
-            if (!fs.existsSync(filename)) {
-                fs.appendFile(link_descriptor_filename, parseurl.href + "\n", (err) => {
-                    // console.log(error,link_descriptor_filename,parseurl.href)
-                });
+        let fetchresult = await fetch( 
+            request.url(),
+            {
+                method:request.method(),
+                body:request.postData(),
+                headers:request.headers()
             }
-        }
-        fs.writeFile(filename, buffer, () => {})
-    }).catch(err => {
+        )
 
-        console.log("This request did not have a body", err)
-    });
+        let body_arraybuffer = await fetchresult.arrayBuffer();
+        body_buffer =  Buffer.from(body_arraybuffer)
+        
+    }
+
+    if(!body_buffer)
+    {
+        try{
+            
+            body_buffer = await response.buffer();
+        }
+        catch(err){
+            
+            console.log("This request did not have a body", err.message)
+            return // No body, no file to write. This can happen on rediredted responses 
+        }
+    }
+
+    if(!body_buffer) // idk how we can end up in this situation but .. just in case
+    {
+        console.error("Not writing data cause buffer is empty")
+        body_buffer = Buffer.from("No data found for this request even with fetch")
+    }
+
+    
+    if (responseHeaders["content-type"] && responseHeaders["content-type"].includes("text/html")) {
+        if (!fs.existsSync(filename)) {
+            fs.appendFile(link_descriptor_filename, parseurl.href + "\n", (err) => {
+                // console.log(error,link_descriptor_filename,parseurl.href)
+            });
+        }
+    }
+    fs.writeFile(filename, body_buffer, () => {})
+
+    
 }
