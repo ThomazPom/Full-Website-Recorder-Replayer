@@ -1,6 +1,6 @@
 replay_blacklist_regex:
   formadist.cnfpt.fr:
-    - https://formadist.cnfpt.fr/Files/Applications
+    - http://example.com/complexRequest###i
   any: []
   player.vimeo.com: "*"
   example.com:
