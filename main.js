@@ -99,5 +99,4 @@ async function doAllStuff()
     },3000)
 
 }
-
 doAllStuff();
