@@ -1,7 +1,15 @@
 {
+  
+  "type": "module",
+  
   "dependencies": {
-    "js-yaml": "^4.1.0",
-    "puppeteer": "^13.1.2",
-    "sha1": "^1.1.1"
+  "puppeteer": "~18.0.0",
+  
+    
+  "puppeteer-extra": "^3.3.4",
+  
+    
+  "puppeteer-extra-plugin-stealth": "^2.11.1"
+  
   }
 }
